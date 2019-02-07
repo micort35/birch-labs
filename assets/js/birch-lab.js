@@ -1,4 +1,11 @@
-const P = new Pokedex.Pokedex();
+// const Pokedex = require('pokeapi-js-wrapper');
+const options = {
+    protocol: 'https',
+    versionPath: '/api/v2/',
+    cache: true,
+    timeout: 5000
+}
+const P = new Pokedex.Pokedex(options);
 
 $(document).ready(function() {
     let team = [];
