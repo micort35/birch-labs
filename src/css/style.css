@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+
+/* COLOR PALETTE 
+   ================================================= */
+
+.page-bg { background-color: #FAFAFA }
+
+.grass { color: #A1E058 }
+.crimson-l { color: #F00000 }
+.crimson-d { color: #EE1515 }
+.platinum { color: #F0F0F0 }
+.raisin { color: #222224 }
+.white { color: #FFF }
+.grass-bg { background-color: #A1E058 }
+.crimson-l-bg { background-color: #F00000 }
+.crimson-d-bg { color: #EE1515 }
+.platinum-bg { background-color: #F0F0F0 }
+.raisin-bg { background-color: #222224 }
+.white-bg { background-color: white }
+
+/* GENERAL 
+   ================================================= */
+
+* {
+    font-family: 'Press Start 2P', 'Times New Roman';
+}
+
+.cap { text-transform: capitalize }
+.center { margin: 0 auto }
+.text-center { text-align: center }
+.block { display: block }
+.i-block { display: inline-block }
+.w-25 { width: 25% }
+.w-50 { width: 50% }
+.w-75 { width: 75% }
+.w-100 { width: 100% }
+.form-hint { opacity: .55 }
+.border-red { border-color: red }
+.separator { border-bottom: 1px solid #F0F0F0 }
+
+.flex-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.box-rounded {
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.box-md {
+    height: 2em;
+    margin-bottom: 1em;
+    line-height: 2em;
+    width: 15%;
+}
+
+.banner {
+    color: white;
+    height: 7.5%;
+    margin-bottom: 2.5%;
+}
+
+.search {
+    height: 3em;
+    line-height: 3em;
+    margin-bottom: 1em;
+}
+
+.sprite {
+    margin-right: 1em;
+    max-height: 96px;
+    max-width: 96px;
+}
+
+.poke-name {
+    width: calc(100% - (96px + 5em)); /* Fill the space left by sprite and buttons */
+}
+
+.poke-move {
+    margin-left: 1em;
+    width: 1.5em;
+}
+
+/* Card Grid */
+
+.card {
+    display: grid;
+}

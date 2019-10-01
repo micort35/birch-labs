@@ -342,7 +342,16 @@
 
   /* Personal */
 
-ul {
-  margin: 0px 0px;
-  padding: 0px 0px;
-}
+  h1, ul {
+    margin: 0px 0px;
+    padding: 0px 0px;
+  }
+
+  button {
+    all: unset;
+    cursor: pointer;
+  }
+
+  input {
+    all: unset;
+  }
