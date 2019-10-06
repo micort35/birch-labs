@@ -355,3 +355,7 @@
   input {
     all: unset;
   }
+
+  li {
+    list-style-type: none;
+  }

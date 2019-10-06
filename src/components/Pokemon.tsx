@@ -1,50 +1,72 @@
 import React, { Component } from "react";
 import ListItem from './layout/ListItem';
-import TextInput from './layout/TextInput';
+import { PokemonData } from "../types/types";
 
-interface PokePropTypes {
-    poke: any,
+interface PokemonTypes {
+    poke: PokemonData,
     editing: boolean,
     movePoke: Function,
-    deletePoke: Function,
     editPoke: Function,
-    capturePoke: Function,
+    deletePoke: Function,
     toggleShiny: Function,
-    onType: Function
+    capturePoke: Function,
 }
 
-class Pokemon extends Component<PokePropTypes> {
+class Pokemon extends Component<PokemonTypes> {
     state = {
-        name: '',
-        sprites: [],
-        types: [],
-        moves: [],
+        move1: '',
+        move2: '',
+        move3: '',
+        move4: '',
         ability: '',
         nature: '',
         item: '',
     }
+
+    onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
 
     render() {
         return (
             <>
                 {
                 this.props.editing ? (
-                    <div className="center flex-center w-25">
-                        <div>
-                            <img src={this.props.poke.sprites.regular} alt="Pokémon's sprite" className="sprite"/>
-                            <p className="i-block text-center cap">{this.props.poke.name}</p>
-                            <ListItem items={this.props.poke.types} />
+                    <div className="text-center">
+                        <div className="card white-bg center flex-center w-25 mt-1 mb-1">
+                            <div className="card-poke text-center">
+                                <p className="p-name i-block cap">{this.props.poke.name}</p>
+                                <img src={this.props.poke.sprites.active} alt="Pokémon's sprite" className="sprite" onClick={() => this.props.toggleShiny(this.props.poke.name)} />
+                                <ListItem items={this.props.poke.types} classifier={typify} />
+                            </div>
+                            <div className="card-moves">
+                                <input type="text" name="move1" placeholder="Move 1" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move2" placeholder="Move 2" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move3" placeholder="Move 3" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move4" placeholder="Move 4" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
+                            </div>
+                            <div className="card-modifiers flex-center">
+                                <input type="text" name="ability" placeholder="Ability" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="nature" placeholder="Nature" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="item" placeholder="Item" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
+                            </div>
                         </div>
-                        <ListItem items={this.props.poke.moves} />
-                        <div>
-                            <TextInput name="ability" placeholder="Ability" classes="" onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onType(e)}/>
-                            <TextInput name="nature" placeholder="Nature" classes="" onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onType(e)}/>
-                            <TextInput name="item" placeholder="Item" classes="" onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onType(e)}/>
-                        </div>
+                        <form className="i-block w-10 mx-1 mb-1" onSubmit={() => this.props.deletePoke(this.props.poke.name)}>
+                            <button
+                                type="submit"
+                                className="box-rounded box-md negative-bg w-100">
+                                Release
+                            </button>
+                        </form>
+                        <form className="i-block w-10 mx-1 mb-1" onSubmit={() => this.props.capturePoke(this.props.poke.name, this.state)}>
+                            <button
+                                type="submit"
+                                className="box-rounded box-md grass-bg w-100">
+                                Capture!
+                            </button>
+                        </form>
                     </div>
                 ) : (
-                    <div className="separator center flex-center w-25">
-                        <img src={this.props.poke.sprites.regular} alt="Pokémon's sprite" className="sprite"/>
+                    <div className="center flex-center w-25 separator">
+                        <img src={this.props.poke.sprites.active} alt="Pokémon's sprite" className="sprite"/>
                         <p className="poke-name i-block text-center cap">{this.props.poke.name}</p>
                         <form className="flex-center">
                             <div className="poke-move i-block">
@@ -55,7 +77,7 @@ class Pokemon extends Component<PokePropTypes> {
                                     <i className="material-icons">arrow_drop_down</i>
                                 </button>
                             </div>
-                            <button type="button">
+                            <button type="button" onClick={() => this.props.editPoke(this.props.poke.name)}>
                                 <i className="material-icons">edit</i>
                             </button>
                             <button type="button" onClick={() => this.props.deletePoke(this.props.poke.name)}>
@@ -68,5 +90,7 @@ class Pokemon extends Component<PokePropTypes> {
         )
     }
 }
+
+const typify = (type: string) => 'box-rounded box-md i-block w-45 mx-025 font-sm upper ' + type
 
 export default Pokemon

@@ -1,21 +1,31 @@
 import React, { Component } from 'react';
 import { Pokedex } from 'pokeapi-js-wrapper';
-import Search from './Search';
+import Search from './layout/Search';
 import Pokemon from './Pokemon';
+import { PokemonData } from '../types/types';
 
 class Team extends Component {
     state = {
+        query: '',
         validSearch: true,
         team: [],
         editing: ''
     }
 
+    onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
+
     // Create PokeAPI client
     readonly Pokedex = new Pokedex();
 
+    encounterPoke = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        this.addPoke(this.state.query);
+        this.setState({ query: '' });
+    }
+
     addPoke = (name: string) => {
         // Check for team max and duplicates
-        if (this.state.team.length === 6 || this.state.team.map((poke: any) => poke.name).includes(name)){
+        if (this.state.team.length === 6 || this.state.team.map((poke: PokemonData) => poke.name).includes(name)){
             this.setState({ validSearch: false });
         } else {
             this.Pokedex.getPokemonByName(name.toLowerCase())
@@ -29,94 +39,131 @@ class Team extends Component {
     }
 
     deletePoke = (name: string) => {
-        this.setState({ team: [...this.state.team.filter((poke: any) => poke.name !== name)]})
-    }
-
-    movePoke = (name: string, direction: number) => {
-        let index = this.state.team.findIndex((poke: any) => poke.name === name);
-        // Move left/up
-        if (direction === -1 && index > 0) {
-            this.setState( {
-                team: swapElements(this.state.team, index, index-1)
-            })
-        // Move right/down
-        } else if (direction === 1 && index < this.state.team.length-1) {
-            this.setState( {
-                team: swapElements(this.state.team, index, index+1)
-            })
-        }
+        this.setState({ team: [...this.state.team.filter((poke: PokemonData) => poke.name !== name)]});
     }
 
     editPoke = (name: string) => {
-        this.setState({ editing: name });
+        this.setState({ editing: name.toLowerCase() });
     }
 
-    capturePoke = (name: string) => {
-        // do something
+    movePoke = (name: string, direction: number) => {
+        const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
+        // Shift backwards
+        if (direction === -1 && index > 0) {
+            this.setState( {
+                team: swapElements(this.state.team, index, index-1)
+            });
+        // Shift forwards
+        } else if (direction === 1 && index < this.state.team.length-1) {
+            this.setState( {
+                team: swapElements(this.state.team, index, index+1)
+            });
+        }
     }
 
     toggleShiny = (name: string) => {
-        // do something
+        const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
+        let pokemon = this.state.team[index] as PokemonData;
+
+        let sprite = '';
+        if (pokemon.sprites.active === pokemon.sprites.regular) {
+            sprite = pokemon.sprites.shiny;
+        } else {
+            sprite = pokemon.sprites.regular;
+        }
+        pokemon.sprites.active = sprite;
+
+        // Needs changing, will mess up order if editing < nth member, inefficient
+        // immutability-helper
+        this.setState({
+            team: [...this.state.team.filter((poke: PokemonData) => poke.name !== name), pokemon]
+        });
     }
 
-    onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value } );
+    validatePoke = (poke: PokemonData) => {
+        // check that all moves and stuff are legal
+    }
+
+    capturePoke = (name: string, edits: any) => {
+        // this too
+        // Needs changing, will mess up order if editing < nth member, inefficient
+        // immutability-helper
+        const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
+        let pokemon = this.state.team[index] as PokemonData;
+        
+        pokemon.moves[0] = edits.move1;
+        pokemon.moves[1] = edits.move2;
+        pokemon.moves[2] = edits.move3;
+        pokemon.moves[3] = edits.move4;
+        pokemon.ability = edits.ability;
+        pokemon.nature = edits.nature;
+        pokemon.item = edits.item;
+
+        this.setState({
+            team: [...this.state.team.filter((poke: PokemonData) => poke.name !== name), pokemon],
+            editing: ''
+        });
+    }
 
     render () {
         return (
             <div className="center">
-                <Search searchPoke={this.addPoke} validSearch/>
+                <Search query={this.state.query}
+                    validSearch={this.state.validSearch}
+                    searchPoke={this.addPoke}
+                    onSubmit={this.encounterPoke}
+                    onChange={this.onType}
+                />
                 {/* Render minimized representations first */}
                 <div>
-                    { this.state.team.map((poke: any) => (
+                    { this.state.team.map((poke: PokemonData) => (
                         poke.name !== this.state.editing &&
                             <Pokemon
                                 key={poke.name}
                                 poke={poke}
                                 editing={poke.name === this.state.editing}
-                                deletePoke={this.deletePoke}
                                 movePoke={this.movePoke}
                                 editPoke={this.editPoke}
-                                capturePoke={this.capturePoke}
+                                deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
-                                onType={this.onType}
+                                capturePoke={this.capturePoke}
                             />
                     ))}
                 </div>
                 {/* Render the Pokemon being unedited at bottom */}
                 <div>
-                    { this.state.team.map((poke: any) => (
+                    { this.state.team.map((poke: PokemonData) => (
                         poke.name === this.state.editing &&
                             <Pokemon
                                 key={poke.name}
                                 poke={poke}
                                 editing={poke.name === this.state.editing}
-                                deletePoke={this.deletePoke}
                                 movePoke={this.movePoke}
                                 editPoke={this.editPoke}
-                                capturePoke={this.capturePoke}
+                                deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
-                                onType={this.onType}
+                                capturePoke={this.capturePoke}
                             />
                     ))}
                 </div>
             </div>
-            
         )
     }
 }
 
-function parsePoke(pokeData: any) {
-    const types = pokeData.types.map((type: any) => type['type']['name']);
+function parsePoke(response: any) {
+    const types = response.types.map((type: any) => type['type']['name']);
     
     return {
-        name: pokeData.name,
+        name: response.name,
         sprites: {
-            regular: pokeData.sprites.front_default,
-            shiny: pokeData.sprites.front_shiny
+            regular: response.sprites.front_default,
+            shiny: response.sprites.front_shiny,
+            active: response.sprites.front_default
         },
-        types: types,
+        types,
         moves: [],
-        ability: pokeData.abilities[0].ability.name,
+        ability: response.abilities[0].ability.name,
         nature: null,
         item: null
     }

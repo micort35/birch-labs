@@ -17,32 +17,64 @@
 .platinum-bg { background-color: #F0F0F0 }
 .raisin-bg { background-color: #222224 }
 .white-bg { background-color: white }
+.negative-bg { background-color: #878787 }
+
+/* Typing */
+
+.normal { background-color: #A8A77A }
+.fire { background-color: #EE8130 }
+.water { background-color: #6390F0 }
+.electric { background-color: #F7D02C }
+.grass { background-color: #7AC74C }
+.ice { background-color: #96D9D6 }
+.fighting { background-color: #C22E28 }
+.poison { background-color: #A33EA1 }
+.ground { background-color: #E2BF65 }
+.flying { background-color: #A98FF3 }
+.psychic { background-color: #F95587 }
+.bug { background-color: #A6B91A }
+.rock { background-color: #B6A136 }
+.ghost { background-color: #735797 }
+.dragon { background-color: #6F35FC }
+.dark { background-color: #705746 }
+.steel { background-color: #B7B7CE }
+.fairy { background-color: #D685AD }
 
 /* GENERAL 
    ================================================= */
 
-* {
-    font-family: 'Press Start 2P', 'Times New Roman';
-}
+* { font-family: 'Press Start 2P', 'Times New Roman' }
 
-.cap { text-transform: capitalize }
 .center { margin: 0 auto }
 .text-center { text-align: center }
 .block { display: block }
 .i-block { display: inline-block }
+.w-10 { width: 10% }
+.w-15 { width: 15% }
 .w-25 { width: 25% }
+.w-30 { width: 30% }
+.w-45 { width: 45% }
 .w-50 { width: 50% }
 .w-75 { width: 75% }
+.w-95 { width: 95% }
 .w-100 { width: 100% }
-.form-hint { opacity: .55 }
-.border-red { border-color: red }
-.separator { border-bottom: 1px solid #F0F0F0 }
+.mx-025 { margin: 0 .25em }
+.mx-05 { margin: 0 .5em }
+.mx-1 { margin: 0 1em }
+.mt-05 { margin-top: .5em }
+.mt-1 { margin-top: 1em }
+.mb-1 { margin-bottom: 1em }
+.font-sm { font-size: .6em }
+.upper { text-transform: uppercase }
+.cap { text-transform: capitalize }
 
 .flex-center {
     align-items: center;
     display: flex;
     justify-content: center;
 }
+
+.separator { border-bottom: 1px solid #F0F0F0 }
 
 .box-rounded {
     border-radius: 8px;
@@ -51,10 +83,10 @@
 
 .box-md {
     height: 2em;
-    margin-bottom: 1em;
     line-height: 2em;
-    width: 15%;
 }
+
+/* Objects */
 
 .banner {
     color: white;
@@ -65,7 +97,6 @@
 .search {
     height: 3em;
     line-height: 3em;
-    margin-bottom: 1em;
 }
 
 .sprite {
@@ -73,6 +104,8 @@
     max-height: 96px;
     max-width: 96px;
 }
+
+/* Team List */
 
 .poke-name {
     width: calc(100% - (96px + 5em)); /* Fill the space left by sprite and buttons */
@@ -86,5 +119,37 @@
 /* Card Grid */
 
 .card {
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4fr 1fr 5fr;
+    grid-template-areas: 
+        "pokemon moves"
+        "modifiers modifiers"
+        "stats stats";
+    height: 35%;
+    row-gap: .5em;
 }
+
+.p-name {
+    margin-block-start: .75em;
+    margin-block-end: .25em;
+}
+
+.card-poke { grid-area: pokemon }
+.card-moves { grid-area: moves }
+.card-modifiers { grid-area: modifiers }
+.card-stats { grid-area: stats }
+
+/* ANIMATIONS
+   ================================================= */
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0) }
+    20%, 80% { transform: translate3d(2px, 0, 0) }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0) }
+    40%, 60% { transform: translate3d(4px, 0, 0) }
+}
+
+.error { animation: shake 1s linear }
