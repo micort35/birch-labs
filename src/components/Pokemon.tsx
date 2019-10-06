@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import ListItem from './layout/ListItem';
+import { HorizontalBar } from 'react-chartjs-2';
 import { PokemonData } from "../types/types";
+import ListItem from './layout/ListItem';
 
 interface PokemonTypes {
     poke: PokemonData,
@@ -23,6 +24,32 @@ class Pokemon extends Component<PokemonTypes> {
         item: '',
     }
 
+    readonly data = {
+        labels: ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'],
+        datasets: [
+          {
+            label: 'Base Stats',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+            data: Object.values(this.props.poke.stats)
+          }
+        ]
+    };
+
+    readonly options = {
+        scales: {
+            xAxes: [{
+                display: true,
+                ticks: {
+                    suggestedMin: Math.min(...this.data.datasets[0].data) - 5
+                }
+            }]
+        }
+    }
+
     onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
 
     render() {
@@ -38,15 +65,18 @@ class Pokemon extends Component<PokemonTypes> {
                                 <ListItem items={this.props.poke.types} classifier={typify} />
                             </div>
                             <div className="card-moves">
-                                <input type="text" name="move1" placeholder="Move 1" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move2" placeholder="Move 2" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move3" placeholder="Move 3" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move4" placeholder="Move 4" className="box-rounded box-md text-center w-95 mt-05" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move1" placeholder="Move 1" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[0]} onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move2" placeholder="Move 2" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[1]} onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move3" placeholder="Move 3" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[2]} onChange={(e) => this.onType(e)} />
+                                <input type="text" name="move4" placeholder="Move 4" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[3]} onChange={(e) => this.onType(e)} />
                             </div>
                             <div className="card-modifiers flex-center">
-                                <input type="text" name="ability" placeholder="Ability" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
-                                <input type="text" name="nature" placeholder="Nature" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
-                                <input type="text" name="item" placeholder="Item" className="box-rounded box-md text-center w-30 mx-025" onChange={(e) => this.onType(e)} />
+                                <input type="text" name="ability" placeholder="Ability" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.ability} onChange={(e) => this.onType(e)} />
+                                <input type="text" name="nature" placeholder="Nature" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.nature} onChange={(e) => this.onType(e)} />
+                                <input type="text" name="item" placeholder="Item" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.item} onChange={(e) => this.onType(e)} />
+                            </div>
+                            <div className="card-stats">
+                                <HorizontalBar data={this.data} options={this.options} />
                             </div>
                         </div>
                         <form className="i-block w-10 mx-1 mb-1" onSubmit={() => this.props.deletePoke(this.props.poke.name)}>

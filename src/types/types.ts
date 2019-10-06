@@ -10,4 +10,12 @@ export interface PokemonData {
     ability: string,
     nature: string,
     item: string
+    stats: {
+        HP: number,
+        Atk: number,
+        Def: number,
+        SpA: number,
+        SpD: number,
+        Spe: number
+    }
 }

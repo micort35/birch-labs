@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Pokedex } from 'pokeapi-js-wrapper';
+import { PokemonData } from '../types/types';
 import Search from './layout/Search';
 import Pokemon from './Pokemon';
-import { PokemonData } from '../types/types';
 
 class Team extends Component {
     state = {
@@ -29,12 +29,12 @@ class Team extends Component {
             this.setState({ validSearch: false });
         } else {
             this.Pokedex.getPokemonByName(name.toLowerCase())
-            .then((response: Object) => {
-                this.setState({ team: [...this.state.team, parsePoke(response)] });
-                this.editPoke(name);
-            }).catch((response: Object) => {
-                this.setState( { validSearch: false });
-            });
+                .then((response: Object) => {
+                    this.setState({ team: [...this.state.team, parsePoke(response)] });
+                    this.editPoke(name);
+                }).catch((response: Object) => {
+                    this.setState( { validSearch: false });
+                });
         }
     }
 
@@ -80,8 +80,15 @@ class Team extends Component {
         });
     }
 
-    validatePoke = (poke: PokemonData) => {
-        // check that all moves and stuff are legal
+    validateAbility = (poke: PokemonData) => {
+        let valid = false;
+        this.Pokedex.getPokemonByName(poke.name.toLowerCase())
+            .then((response: any) => {
+                const abilities = response.abilities.map((ability: any) => ability['ability']['name']);
+                const ability = poke.ability.toLowerCase().replace(' ', '-');
+                valid = abilities.includes(ability);
+            });
+        return valid;
     }
 
     capturePoke = (name: string, edits: any) => {
@@ -98,6 +105,11 @@ class Team extends Component {
         pokemon.ability = edits.ability;
         pokemon.nature = edits.nature;
         pokemon.item = edits.item;
+
+        const valid = this.validateAbility(pokemon) as boolean;
+        if (!valid) {
+            // shake the ability comp
+        }
 
         this.setState({
             team: [...this.state.team.filter((poke: PokemonData) => poke.name !== name), pokemon],
@@ -163,9 +175,17 @@ function parsePoke(response: any) {
         },
         types,
         moves: [],
-        ability: response.abilities[0].ability.name,
-        nature: null,
-        item: null
+        ability: '',
+        nature: '',
+        item: '',
+        stats: {
+            HP: response.stats[0].base_stat,
+            Atk: response.stats[1].base_stat,
+            Def: response.stats[2].base_stat,
+            SpA: response.stats[3].base_stat,
+            SpD: response.stats[4].base_stat,
+            Spe: response.stats[5].base_stat,
+        }
     }
 }
 
