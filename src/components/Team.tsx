@@ -14,6 +14,12 @@ class Team extends Component {
 
     onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
 
+    onType_ID = (e: React.ChangeEvent<HTMLInputElement>, id: string, property: string) => {
+        const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
+        let pokemon = new Map(Object.entries(this.state.team[index]));
+        pokemon.set(property, e.currentTarget.value);
+    }
+
     // Create PokeAPI client
     readonly Pokedex = new Pokedex();
 
@@ -139,6 +145,7 @@ class Team extends Component {
                                 deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
                                 capturePoke={this.capturePoke}
+                                onChange={this.onType_ID}
                             />
                     ))}
                 </div>
@@ -155,6 +162,7 @@ class Team extends Component {
                                 deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
                                 capturePoke={this.capturePoke}
+                                onChange={this.onType_ID}
                             />
                     ))}
                 </div>

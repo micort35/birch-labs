@@ -11,19 +11,10 @@ interface PokemonTypes {
     deletePoke: Function,
     toggleShiny: Function,
     capturePoke: Function,
+    onChange: Function
 }
 
 class Pokemon extends Component<PokemonTypes> {
-    state = {
-        move1: '',
-        move2: '',
-        move3: '',
-        move4: '',
-        ability: '',
-        nature: '',
-        item: '',
-    }
-
     readonly data = {
         labels: ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'],
         datasets: [
@@ -50,8 +41,6 @@ class Pokemon extends Component<PokemonTypes> {
         }
     }
 
-    onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
-
     render() {
         return (
             <>
@@ -61,19 +50,73 @@ class Pokemon extends Component<PokemonTypes> {
                         <div className="card white-bg center flex-center w-25 mt-1 mb-1">
                             <div className="card-poke text-center">
                                 <p className="p-name i-block cap">{this.props.poke.name}</p>
-                                <img src={this.props.poke.sprites.active} alt="Pokémon's sprite" className="sprite" onClick={() => this.props.toggleShiny(this.props.poke.name)} />
+                                <img 
+                                    src={this.props.poke.sprites.active}
+                                    alt="Pokémon's sprite"
+                                    className="sprite"
+                                    onClick={() => this.props.toggleShiny(this.props.poke.name)}
+                                />
                                 <ListItem items={this.props.poke.types} classifier={typify} />
                             </div>
                             <div className="card-moves">
-                                <input type="text" name="move1" placeholder="Move 1" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[0]} onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move2" placeholder="Move 2" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[1]} onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move3" placeholder="Move 3" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[2]} onChange={(e) => this.onType(e)} />
-                                <input type="text" name="move4" placeholder="Move 4" className="box-rounded box-md text-center w-95 mt-05" value={this.props.poke.moves[3]} onChange={(e) => this.onType(e)} />
+                                <input
+                                    type="text"
+                                    name="move1"
+                                    placeholder="Move 1"
+                                    className="box-rounded box-md text-center w-95 mt-05"
+                                    value={this.props.poke.moves[0]}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
+                                <input
+                                    type="text"
+                                    name="move2"
+                                    placeholder="Move 2"
+                                    className="box-rounded box-md text-center w-95 mt-05"
+                                    value={this.props.poke.moves[1]}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, '')}
+                                />
+                                <input
+                                    type="text"
+                                    name="move3"
+                                    placeholder="Move 3"
+                                    className="box-rounded box-md text-center w-95 mt-05"
+                                    value={this.props.poke.moves[2]}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
+                                <input
+                                    type="text"
+                                    name="move4"
+                                    placeholder="Move 4"
+                                    className="box-rounded box-md text-center w-95 mt-05"
+                                    value={this.props.poke.moves[3]}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
                             </div>
                             <div className="card-modifiers flex-center">
-                                <input type="text" name="ability" placeholder="Ability" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.ability} onChange={(e) => this.onType(e)} />
-                                <input type="text" name="nature" placeholder="Nature" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.nature} onChange={(e) => this.onType(e)} />
-                                <input type="text" name="item" placeholder="Item" className="box-rounded box-md text-center w-30 mx-025" value={this.props.poke.item} onChange={(e) => this.onType(e)} />
+                                <input
+                                    type="text"
+                                    name="ability"
+                                    placeholder="Ability"
+                                    className="box-rounded box-md text-center w-30 mx-025"
+                                    value={this.props.poke.ability}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
+                                <input
+                                    type="text"
+                                    name="nature"
+                                    placeholder="Nature"
+                                    className="box-rounded box-md text-center w-30 mx-025"
+                                    value={this.props.poke.nature}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
+                                <input
+                                    type="text"
+                                    name="item"
+                                    placeholder="Item"
+                                    className="box-rounded box-md text-center w-30 mx-025"
+                                    value={this.props.poke.item}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                />
                             </div>
                             <div className="card-stats">
                                 <HorizontalBar data={this.data} options={this.options} />
