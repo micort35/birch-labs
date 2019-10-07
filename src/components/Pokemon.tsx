@@ -10,6 +10,7 @@ interface PokemonTypes {
     editPoke: Function,
     deletePoke: Function,
     toggleShiny: Function,
+    releasePoke: Function,
     capturePoke: Function,
     onChange: Function
 }
@@ -65,7 +66,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Move 1"
                                     className="box-rounded box-md text-center w-95 mt-05"
                                     value={this.props.poke.moves[0]}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'moves', 0)}
                                 />
                                 <input
                                     type="text"
@@ -73,7 +74,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Move 2"
                                     className="box-rounded box-md text-center w-95 mt-05"
                                     value={this.props.poke.moves[1]}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, '')}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'moves', 1)}
                                 />
                                 <input
                                     type="text"
@@ -81,7 +82,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Move 3"
                                     className="box-rounded box-md text-center w-95 mt-05"
                                     value={this.props.poke.moves[2]}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'moves', 2)}
                                 />
                                 <input
                                     type="text"
@@ -89,7 +90,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Move 4"
                                     className="box-rounded box-md text-center w-95 mt-05"
                                     value={this.props.poke.moves[3]}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'moves', 3)}
                                 />
                             </div>
                             <div className="card-modifiers flex-center">
@@ -99,7 +100,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Ability"
                                     className="box-rounded box-md text-center w-30 mx-025"
                                     value={this.props.poke.ability}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'ability')}
                                 />
                                 <input
                                     type="text"
@@ -107,7 +108,7 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Nature"
                                     className="box-rounded box-md text-center w-30 mx-025"
                                     value={this.props.poke.nature}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'nature')}
                                 />
                                 <input
                                     type="text"
@@ -115,21 +116,21 @@ class Pokemon extends Component<PokemonTypes> {
                                     placeholder="Item"
                                     className="box-rounded box-md text-center w-30 mx-025"
                                     value={this.props.poke.item}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.props.onChange(e, this.props.poke.name, 'item')}
                                 />
                             </div>
                             <div className="card-stats">
                                 <HorizontalBar data={this.data} options={this.options} />
                             </div>
                         </div>
-                        <form className="i-block w-10 mx-1 mb-1" onSubmit={() => this.props.deletePoke(this.props.poke.name)}>
+                        <form className="i-block w-10 mx-1 mb-1" onSubmit={(e) => this.props.releasePoke(e, this.props.poke.name)}>
                             <button
                                 type="submit"
                                 className="box-rounded box-md negative-bg w-100">
                                 Release
                             </button>
                         </form>
-                        <form className="i-block w-10 mx-1 mb-1" onSubmit={() => this.props.capturePoke(this.props.poke.name, this.state)}>
+                        <form className="i-block w-10 mx-1 mb-1" onSubmit={(e) => this.props.capturePoke(e, this.props.poke.name, this.state)}>
                             <button
                                 type="submit"
                                 className="box-rounded box-md grass-bg w-100">

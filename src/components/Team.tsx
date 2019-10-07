@@ -14,10 +14,21 @@ class Team extends Component {
 
     onType = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ [e.currentTarget.name]: e.currentTarget.value });
 
-    onType_ID = (e: React.ChangeEvent<HTMLInputElement>, id: string, property: string) => {
-        const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
-        let pokemon = new Map(Object.entries(this.state.team[index]));
-        pokemon.set(property, e.currentTarget.value);
+    onTypeID = (e: React.ChangeEvent<HTMLInputElement>, id: string, property: string, index?: number) => {
+        const memNum = this.state.team.findIndex((poke: PokemonData) => poke.name === id);
+        let pokemon = this.state.team[memNum] as PokemonData;
+        if (index !== undefined) {
+            let properties = pokemon[property] as Array<String>;
+            properties[index] = e.currentTarget.value;
+        } else {
+            pokemon[property] = e.currentTarget.value;
+        }
+
+        // Needs changing, will mess up order if editing < nth member, inefficient
+        // immutability-helper
+        this.setState({
+            team: [...this.state.team.filter((poke: PokemonData) => poke.name !== id), pokemon]
+        });
     }
 
     // Create PokeAPI client
@@ -71,13 +82,9 @@ class Team extends Component {
         const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
         let pokemon = this.state.team[index] as PokemonData;
 
-        let sprite = '';
-        if (pokemon.sprites.active === pokemon.sprites.regular) {
-            sprite = pokemon.sprites.shiny;
-        } else {
-            sprite = pokemon.sprites.regular;
-        }
-        pokemon.sprites.active = sprite;
+        pokemon.sprites.active = (pokemon.sprites.active === pokemon.sprites.regular)
+            ? pokemon.sprites.shiny
+            : pokemon.sprites.regular;
 
         // Needs changing, will mess up order if editing < nth member, inefficient
         // immutability-helper
@@ -87,8 +94,9 @@ class Team extends Component {
     }
 
     validateAbility = (poke: PokemonData) => {
+        // extend to nature and item
         let valid = false;
-        this.Pokedex.getPokemonByName(poke.name.toLowerCase())
+        this.Pokedex.getPokemonByName((poke.name as string).toLowerCase())
             .then((response: any) => {
                 const abilities = response.abilities.map((ability: any) => ability['ability']['name']);
                 const ability = poke.ability.toLowerCase().replace(' ', '-');
@@ -97,30 +105,23 @@ class Team extends Component {
         return valid;
     }
 
-    capturePoke = (name: string, edits: any) => {
-        // this too
-        // Needs changing, will mess up order if editing < nth member, inefficient
-        // immutability-helper
+    releasePoke = (e: React.FormEvent<HTMLFormElement>, name: string) => {
+        e.preventDefault();
+        this.deletePoke(name);
+    }
+
+    capturePoke = (e: React.FormEvent<HTMLFormElement>, name: string, edits: any) => {
+        e.preventDefault();
+
         const index = this.state.team.findIndex((poke: PokemonData) => poke.name === name);
         let pokemon = this.state.team[index] as PokemonData;
         
-        pokemon.moves[0] = edits.move1;
-        pokemon.moves[1] = edits.move2;
-        pokemon.moves[2] = edits.move3;
-        pokemon.moves[3] = edits.move4;
-        pokemon.ability = edits.ability;
-        pokemon.nature = edits.nature;
-        pokemon.item = edits.item;
-
         const valid = this.validateAbility(pokemon) as boolean;
         if (!valid) {
-            // shake the ability comp
+            // shake invalid comp and return
         }
 
-        this.setState({
-            team: [...this.state.team.filter((poke: PokemonData) => poke.name !== name), pokemon],
-            editing: ''
-        });
+        this.setState({ editing: '' });
     }
 
     render () {
@@ -137,15 +138,16 @@ class Team extends Component {
                     { this.state.team.map((poke: PokemonData) => (
                         poke.name !== this.state.editing &&
                             <Pokemon
-                                key={poke.name}
+                                key={poke.name as string}
                                 poke={poke}
                                 editing={poke.name === this.state.editing}
                                 movePoke={this.movePoke}
                                 editPoke={this.editPoke}
                                 deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
+                                releasePoke={this.releasePoke}
                                 capturePoke={this.capturePoke}
-                                onChange={this.onType_ID}
+                                onChange={this.onTypeID}
                             />
                     ))}
                 </div>
@@ -154,15 +156,16 @@ class Team extends Component {
                     { this.state.team.map((poke: PokemonData) => (
                         poke.name === this.state.editing &&
                             <Pokemon
-                                key={poke.name}
+                                key={poke.name as string}
                                 poke={poke}
                                 editing={poke.name === this.state.editing}
                                 movePoke={this.movePoke}
                                 editPoke={this.editPoke}
                                 deletePoke={this.deletePoke}
                                 toggleShiny={this.toggleShiny}
+                                releasePoke={this.releasePoke}
                                 capturePoke={this.capturePoke}
-                                onChange={this.onType_ID}
+                                onChange={this.onTypeID}
                             />
                     ))}
                 </div>
@@ -182,7 +185,7 @@ function parsePoke(response: any) {
             active: response.sprites.front_default
         },
         types,
-        moves: [],
+        moves: ['', '', '', ''],
         ability: '',
         nature: '',
         item: '',

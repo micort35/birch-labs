@@ -1,11 +1,11 @@
 export interface PokemonData {
-    readonly name: string,
+    [name: string]: string | Array<string> | Object,
     sprites: {
         readonly regular: string,
         readonly shiny: string,
         active: string
     },
-    readonly types: Array<string>,
+    types: Array<string>,
     moves: Array<string>,
     ability: string,
     nature: string,
